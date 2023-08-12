@@ -5,7 +5,7 @@ from distutils.errors import *
 
 impa_module = Extension(
     name='impa_core',
-    sources=[os.path.dirname(__file__) + '/impa.cpp'],
+    sources=[os.path.dirname(__file__) + '/impa_core.cpp'],
     extra_compile_args=["-O3","-fPIC", "-Wall", "-std=c++17"],
     include_dirs=['/usr/include/eigen3', '/usr/include/pybind11/',
         os.path.dirname(__file__)],
@@ -42,4 +42,4 @@ if ok:
             CCompilerError) as msg:
         raise SystemExit("error: " + str(msg))
 
-import impa
+from impa_core import *
