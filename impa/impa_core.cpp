@@ -38,10 +38,10 @@ std::array<Pos, 4> relative_neighbors = {
 
 struct Node {
     bool valid = false;
-    NodeType type = SIMPLE;
+    int8_t type = SIMPLE;
     int8_t size = 0;
-    ColorType color = YELLOW;
-    ColorType next_color = YELLOW;
+    int8_t color = YELLOW;
+    int8_t next_color = YELLOW;
     Pos another_pos = Pos(0, 0);
     std::vector<Pos> neighbors() const {
         std::vector<Pos> result;
@@ -64,11 +64,16 @@ struct Node {
 };
 
 class Map {
-    int8_t h=0, w=0;
     std::vector<Node> nodes;
     std::vector<size_t> dynamic_nodes;
-    Node& get(Pos p) {return nodes[p.x + p.y * w];}
+    void reset() {
+        h=0; w=0;
+        nodes.clear();
+        dynamic_nodes.clear();
+    }
 public:
+    int8_t h=0, w=0;
+    Node& get(Pos p) {return nodes[p.x + p.y * w];}
     bool success() const {
         for (const auto& node : nodes) {
             if (node.valid && node.size != node.color)
@@ -101,6 +106,7 @@ public:
         }
     }
     void load(std::string t) {
+        reset();
         int state = 0;
         int row_cnt = 0, col_cnt = 0;
         ColorType color, next_color;
@@ -179,9 +185,24 @@ public:
 
 PYBIND11_MODULE(impa_core, m) {
     m.doc() = "impa_core";
+    py::class_<Pos>(m, "Pos")
+        .def(py::init<int8_t, int8_t>())
+        .def_readwrite("x", &Pos::x)
+        .def_readwrite("y", &Pos::y);
+    py::class_<Node>(m, "Node")
+        .def(py::init<>())
+        .def_readwrite("valid", &Node::valid)
+        .def_readwrite("type", &Node::type)
+        .def_readwrite("size", &Node::size)
+        .def_readwrite("color", &Node::color)
+        .def_readwrite("next_color", &Node::next_color)
+        .def_readwrite("another_pos", &Node::another_pos);
     py::class_<Map>(m, "Map")
-        .def(py::init())
+        .def(py::init<>())
+        .def_readwrite("h", &Map::h)
+        .def_readwrite("w", &Map::w)
+        .def("get", &Map::get)
         .def("success", &Map::success)
-        .def("click", [](Map& self, int x, int y) {self.click(Pos(x, y));})
+        .def("click", &Map::click)
         .def("load", &Map::load);
 }
