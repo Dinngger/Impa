@@ -205,10 +205,10 @@ public:
                         throw std::runtime_error("Invalid '>' character");
                     Node& left_node = nodes[nodes.size() - 1];
                     left_node.type = WALKMAN;
-                    left_node.another_pos = Pos(1, 0);
+                    left_node.another_pos = Pos(0, 1);
                     nodes.emplace_back(left_node);
                     nodes.back().valid = false;
-                    nodes.back().another_pos = Pos(-1, 0);
+                    nodes.back().another_pos = Pos(0, -1);
                     dynamic_nodes.push_back(nodes.size() - 1);
                     dynamic_nodes.push_back(nodes.size() - 2);
                     col_cnt++; break;

@@ -1,5 +1,5 @@
 x x x x Y0
 x x x Y0R0
 x x Y0B1Y0
-x Y0R1Y0B1
+x Y0R0Y0B1
 Y2B1Y0B2B2

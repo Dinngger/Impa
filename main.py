@@ -21,11 +21,12 @@ if os.path.exists('build/cache.txt'):
         game_id = int(f.readline())
 else:
     game_id = 1
-size = (700, 700)
+
+window_size = (700, 800)
 node_size = 80
 bg_size = node_size * 0.9
 bg_offset = node_size * 0.05
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(window_size)
 icon = pygame.image.load('assets/appicon.webp')
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
@@ -40,7 +41,7 @@ node_radius = [-1, 5, 10]
 play = True
 
 m = Map(get_game(game_id))
-off_set = ((700 - m.h * node_size) / 2.0, (700 - m.w * node_size) / 2.0)
+off_set = ((window_size[1] - m.h * node_size + 50) / 2.0, (window_size[0] - m.w * node_size) / 2.0)
 refresh = True
 
 while play:
@@ -54,26 +55,26 @@ while play:
             if i > 0 and i < m.h and i - int(i) < 0.9 and \
                j > 0 and j < m.w and j - int(j) < 0.9:
                 m.click(Pos(int(i), int(j)))
-            if m.success() and x > 120 and x < 200 and y > 40 and y < 120:
+            if m.success() and x > 100 and x < 180 and y > 20 and y < 100:
                 game_id += 1
                 with open('build/cache.txt', 'w') as f:
                     f.write(str(game_id))
                 pygame.display.set_caption(f"IMPA - Level {game_id}")
                 m = Map(get_game(game_id))
-            if x > 40 and x < 120 and y > 40 and y < 120:
+            if x > 20 and x < 100 and y > 20 and y < 100:
                 m = Map(get_game(game_id))
-            off_set = ((700 - m.h * node_size) / 2.0, (700 - m.w * node_size) / 2.0)
+            off_set = ((window_size[1] - m.h * node_size + 50) / 2.0, (window_size[0] - m.w * node_size) / 2.0)
             refresh = True
     clock.tick(60)
     if not refresh:
         continue
     refresh = False
     screen.fill((41, 40, 46))
-    pygame.draw.circle(screen, (172, 62, 99), (80, 85), 30)
-    pygame.draw.circle(screen, (252, 142, 181), (80, 80), 30)
+    pygame.draw.circle(screen, (172, 62, 99), (60, 65), 30)
+    pygame.draw.circle(screen, (252, 142, 181), (60, 60), 30)
     if m.success():
-        pygame.draw.circle(screen, (123, 97, 48), (160, 85), 30)
-        pygame.draw.circle(screen, (253, 220, 139), (160, 80), 30)
+        pygame.draw.circle(screen, (123, 97, 48), (140, 65), 30)
+        pygame.draw.circle(screen, (253, 220, 139), (140, 60), 30)
     for i in range(m.h):
         for j in range(m.w):
             node = m.get(Pos(i, j))
