@@ -147,6 +147,16 @@ public:
                     nodes.back().another_pos = Pos(0, -1);
                     col_cnt++; break;
                 }
+                case '|': {
+                    if (row_cnt < 1)
+                        throw std::runtime_error("Invalid '|' character");
+                    Node& above_node = nodes[nodes.size() - w];
+                    above_node.type = BIG;
+                    above_node.another_pos = Pos(1, 0);
+                    nodes.emplace_back(above_node);
+                    nodes.back().another_pos = Pos(-1, 0);
+                    col_cnt++; break;
+                }
                 case '\n':
                     if (col_cnt == 0) break;
                     if (w == 0)
