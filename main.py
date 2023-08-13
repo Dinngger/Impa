@@ -30,9 +30,9 @@ shadow_sizes = [0, 2, 4]
 node_radius = [-1, 5, 10]
 play = True
 
-game_id = 1
+game_id = 23
 m = Map(get_game(game_id))
-off_set = ((700 - m.h * node_size) / 2.0, (700 - m.h * node_size) / 2.0)
+off_set = ((700 - m.h * node_size) / 2.0, (700 - m.w * node_size) / 2.0)
 
 while play:
     screen.fill((41, 40, 46))
@@ -54,7 +54,7 @@ while play:
             if x > 40 and x < 120 and y > 40 and y < 120:
                 # reset
                 m = Map(get_game(game_id))
-                off_set = ((700 - m.h * node_size) / 2.0, (700 - m.h * node_size) / 2.0)
+                off_set = ((700 - m.h * node_size) / 2.0, (700 - m.w * node_size) / 2.0)
     for i in range(m.h):
         for j in range(m.w):
             node = m.get(Pos(i, j))
@@ -66,6 +66,14 @@ while play:
                                      [j * node_size + off_set[1] + bg_offset,
                                       i * node_size + off_set[0] + bg_offset, bg_size, bg_size],
                                      border_radius=15)
+                elif node.type == 1 and node.another_pos.x >= 0 and node.another_pos.y >=0:
+                    rect_size_x, rect_size_y = bg_size, bg_size + node_size
+                    if node.another_pos.y > 0:
+                        rect_size_x, rect_size_y = rect_size_y, rect_size_x
+                    pygame.draw.rect(screen, botton_colors[node.color],
+                                     [j * node_size + off_set[1] + bg_offset,
+                                      i * node_size + off_set[0] + bg_offset,
+                                      rect_size_x, rect_size_y], border_radius=15)
                 if node.size > 0:
                     pygame.draw.rect(screen, shadow_colors[node.color],
                                     [j * node_size + off_set[1] + block_offset,

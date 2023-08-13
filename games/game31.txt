@@ -1,0 +1,5 @@
+x x B1Y2x 
+B2Y0Y0Y0x 
+Y1Y0B1Y0B2
+x Y0R0Y0B2
+x B2B2x x 

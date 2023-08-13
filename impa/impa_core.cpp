@@ -72,11 +72,23 @@ class Map {
         nodes.clear();
         dynamic_nodes.clear();
     }
+    void change_size(Pos p, int8_t delta) {
+        Node& n = get(p);
+        if (!n.valid)
+            throw std::runtime_error("change invalid node size");
+        n.size += delta;
+        if (n.type == BIG) {
+            Node& an = get(p + n.another_pos);
+            if (!an.valid)
+                throw std::runtime_error("Invalid BIG node");
+            an.size += delta;
+        }
+    }
 public:
     int8_t h=0, w=0;
     Node& get(Pos p) {
-        if (p.x >=0 && p.x < w && p.y >=0 && p.y < h)
-            return nodes[p.x + p.y * w];
+        if (p.x >=0 && p.x < h && p.y >=0 && p.y < w)
+            return nodes[p.y + p.x * w];
         else
             return border_node;
     }
@@ -91,11 +103,11 @@ public:
         Node& n = get(p);
         if (!n.valid || n.size == 0)
             return;
-        n.size--;
+        change_size(p, -1);
         for (const Pos& neighbor_pos : n.neighbors()) {
             Node& neighbor = this->get(p + neighbor_pos);
             if (neighbor.valid && neighbor.size < 2)
-                neighbor.size++;
+                change_size(p + neighbor_pos, 1);
         }
         for (size_t i : dynamic_nodes) {
             Node& dn = nodes[i];
@@ -126,6 +138,15 @@ public:
                 case 'Y': color = YELLOW; state = 1; break;
                 case 'B': color = BLUE; state = 1; break;
                 case 'x': nodes.emplace_back(); col_cnt++; break;
+                case '-': {
+                    if (col_cnt < 1)
+                        throw std::runtime_error("Invalid '-' character");
+                    nodes.back().type = BIG;
+                    nodes.back().another_pos = Pos(0, 1);
+                    nodes.emplace_back(nodes.back());
+                    nodes.back().another_pos = Pos(0, -1);
+                    col_cnt++; break;
+                }
                 case '\n':
                     if (col_cnt == 0) break;
                     if (w == 0)
