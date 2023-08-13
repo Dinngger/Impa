@@ -33,7 +33,7 @@ struct Pos {
     }
 };
 
-std::array<Pos, 4> relative_neighbors = {
+const std::array<Pos, 4> relative_neighbors = {
     Pos(0, 1), Pos(1, 0), Pos(0, -1), Pos(-1, 0)};
 
 struct Node {
@@ -64,6 +64,7 @@ struct Node {
 };
 
 class Map {
+    Node border_node;
     std::vector<Node> nodes;
     std::vector<size_t> dynamic_nodes;
     void reset() {
@@ -73,7 +74,12 @@ class Map {
     }
 public:
     int8_t h=0, w=0;
-    Node& get(Pos p) {return nodes[p.x + p.y * w];}
+    Node& get(Pos p) {
+        if (p.x >=0 && p.x < w && p.y >=0 && p.y < h)
+            return nodes[p.x + p.y * w];
+        else
+            return border_node;
+    }
     bool success() const {
         for (const auto& node : nodes) {
             if (node.valid && node.size != node.color)
@@ -199,6 +205,7 @@ PYBIND11_MODULE(impa_core, m) {
         .def_readwrite("another_pos", &Node::another_pos);
     py::class_<Map>(m, "Map")
         .def(py::init<>())
+        .def(py::init<const Map&>(), "Copy Constructor")
         .def_readwrite("h", &Map::h)
         .def_readwrite("w", &Map::w)
         .def("get", &Map::get)
