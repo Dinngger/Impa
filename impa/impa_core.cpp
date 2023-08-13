@@ -77,10 +77,12 @@ class Map {
         if (!n.valid)
             throw std::runtime_error("change invalid node size");
         n.size += delta;
-        if (n.type == BIG) {
+        if (n.type == BIG || n.type == WALKMAN) {
             Node& an = get(p + n.another_pos);
-            if (!an.valid)
+            if (n.type == BIG && !an.valid)
                 throw std::runtime_error("Invalid BIG node");
+            if (n.type == WALKMAN && an.valid)
+                throw std::runtime_error("Invalid WALKMAN node");
             an.size += delta;
         }
     }
@@ -155,6 +157,60 @@ public:
                     above_node.another_pos = Pos(1, 0);
                     nodes.emplace_back(above_node);
                     nodes.back().another_pos = Pos(-1, 0);
+                    col_cnt++; break;
+                }
+                case '^': {
+                    if (row_cnt < 1)
+                        throw std::runtime_error("Invalid '^' character");
+                    Node& above_node = nodes[nodes.size() - w];
+                    above_node.valid = false;
+                    above_node.type = WALKMAN;
+                    above_node.another_pos = Pos(1, 0);
+                    nodes.emplace_back(above_node);
+                    nodes.back().valid = true;
+                    nodes.back().another_pos = Pos(-1, 0);
+                    dynamic_nodes.push_back(nodes.size() - w - 1);
+                    dynamic_nodes.push_back(nodes.size() - 1);
+                    col_cnt++; break;
+                }
+                case 'v': {
+                    if (row_cnt < 1)
+                        throw std::runtime_error("Invalid 'v' character");
+                    Node& above_node = nodes[nodes.size() - w];
+                    above_node.type = WALKMAN;
+                    above_node.another_pos = Pos(1, 0);
+                    nodes.emplace_back(above_node);
+                    nodes.back().valid = false;
+                    nodes.back().another_pos = Pos(-1, 0);
+                    dynamic_nodes.push_back(nodes.size() - w - 1);
+                    dynamic_nodes.push_back(nodes.size() - 1);
+                    col_cnt++; break;
+                }
+                case '<': {
+                    if (col_cnt < 1)
+                        throw std::runtime_error("Invalid '<' character");
+                    Node& left_node = nodes[nodes.size() - 1];
+                    left_node.valid = false;
+                    left_node.type = WALKMAN;
+                    left_node.another_pos = Pos(0, 1);
+                    nodes.emplace_back(left_node);
+                    nodes.back().valid = true;
+                    nodes.back().another_pos = Pos(0, -1);
+                    dynamic_nodes.push_back(nodes.size() - 1);
+                    dynamic_nodes.push_back(nodes.size() - 2);
+                    col_cnt++; break;
+                }
+                case '>': {
+                    if (col_cnt < 1)
+                        throw std::runtime_error("Invalid '>' character");
+                    Node& left_node = nodes[nodes.size() - 1];
+                    left_node.type = WALKMAN;
+                    left_node.another_pos = Pos(1, 0);
+                    nodes.emplace_back(left_node);
+                    nodes.back().valid = false;
+                    nodes.back().another_pos = Pos(-1, 0);
+                    dynamic_nodes.push_back(nodes.size() - 1);
+                    dynamic_nodes.push_back(nodes.size() - 2);
                     col_cnt++; break;
                 }
                 case '\n':

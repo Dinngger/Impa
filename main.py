@@ -109,4 +109,16 @@ while play:
                                   i * node_size + off_set[0] + block_offset
                                   - shadow_sizes[node.size], size, size],
                                  border_radius=node_radius[node.size])
+            elif node.type == 3:
+                centor_x, centor_y = (j + 0.5) * node_size + off_set[1], (i + 0.5) * node_size + off_set[0]
+                if node.another_pos.y == 0:
+                    pygame.draw.polygon(screen, colors[node.color],
+                                        [(centor_x, centor_y + 0.3 * node_size * node.another_pos.x),
+                                         (centor_x - 0.2 * node_size, centor_y + 0.4 * node_size * node.another_pos.x),
+                                         (centor_x + 0.2 * node_size, centor_y + 0.4 * node_size * node.another_pos.x)])
+                else:
+                    pygame.draw.polygon(screen, colors[node.color],
+                                        [(centor_x + 0.3 * node_size * node.another_pos.y, centor_y),
+                                         (centor_x + 0.4 * node_size * node.another_pos.y, centor_y - 0.2 * node_size),
+                                         (centor_x + 0.4 * node_size * node.another_pos.y, centor_y + 0.2 * node_size)])
     pygame.display.flip()
