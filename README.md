@@ -3,8 +3,17 @@ PyGame implementation of IMPA game from [TapTap](https://www.taptap.cn/app/17101
 The core game logic is implemented with C++ for effecient reinforcement learning.
 ![](assets/cover.webp)
 
-# Run
+# Prepare
+The game is tested on Ubuntu20 and WSL.
+```bash
+sudo apt install pybind11-dev
+pip3 install pygame
+```
+# Run IMPA!
 Just run main.py with Python3. The C++ code will be compiled JIT.
+```bash
+python3 main.py
+```
 
 # Play Note
 - Game Target: Just as the figure above. Make Red block minimal, Yellow block in middle and Blue block biggest.
